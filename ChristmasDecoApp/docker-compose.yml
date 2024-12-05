@@ -1,0 +1,51 @@
+services:
+  backend:
+    build:
+      context: ./backend
+    ports:
+      - "8080:8080"
+    
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/myappdb
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: 1234
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+    depends_on:
+      - db
+    networks:
+      - app-network
+  
+
+  frontend:
+    build:
+      context: ./frontend/OpensourceSW
+      dockerfile: Dockerfile
+    ports:
+      - "3000:80"  # React 기본 포트
+    depends_on:
+      - backend  # 백엔드가 먼저 실행되도록 설정
+    environment:
+      REACT_APP_BACKEND_URL: http://localhost:8080  # 백엔드와 통신할 URL
+
+
+  db:
+    image: mysql:8.0.33
+    restart: always
+    container_name: db
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: 1234  # Root 사용자 비밀번호 설정
+      MYSQL_DATABASE: myappdb      # 초기화할 데이터베이스 이름
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    networks:
+      - app-network
+
+volumes:
+  db_data:
+
+networks:
+  app-network:
+    driver: bridge

@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend  
+  namespace: christmas-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      containers:
+      - name: frontend
+        image: ulsanwhale/frontend-app:latest
+        ports:
+          - containerPort: 80
+        env:
+          - name: REACT_APP_BACKEND_URL
+            value: "http://backend:8080"
+
+---
+
+# Frontend Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend
+  namespace: christmas-app
+  annotations:
+    cloud.google.com/load-balancer-type: "External"
+spec:
+  selector:
+    app: frontend
+  type: LoadBalancer
+  ports:
+    - protocol: TCP
+      port: 80        # 클러스터 내부 서비스 포트
+      targetPort: 80  # 컨테이너 포트

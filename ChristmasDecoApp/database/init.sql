@@ -1,0 +1,4 @@
+CREATE DATABASE IF NOT EXISTS myappdb;
+CREATE USER 'appuser'@'%' IDENTIFIED BY 'password';
+GRANT ALL PRIVILEGES ON myappdb.* TO 'appuser'@'%';
+FLUSH PRIVILEGES;
