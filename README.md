@@ -74,7 +74,7 @@
 1. 프로젝트 클론
     
     ```bash
-    git clone https://github.com/openSWrepository/frontcode.git --바꿀부분
+    git clone https://github.com/openSWrepository/ChristmasDecoApp.git
     ```
     
 2. 루트 디렉토리에서 docker-compose 빌드
